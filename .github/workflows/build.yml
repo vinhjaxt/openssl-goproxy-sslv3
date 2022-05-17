@@ -1,0 +1,44 @@
+name: Go
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Setup mingw64 && building openssl
+      run: |
+        sudo apt update -y
+        sudo apt install -y gcc-mingw-w64 gcc-multilib libkrb5-dev
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+
+    - name: Build
+      run: |
+        sudo rm -rf /usr/x86_64-w64-mingw32/include/openssl /usr/local/ssl/include/openssl
+        sudo mkdir -p /usr/local/ssl/include /usr/local/ssl/lib
+        sudo cp -r ./openssl-source/dist/include/openssl /usr/x86_64-w64-mingw32/include/
+        sudo cp -r ./openssl-source/dist/lib/* /usr/x86_64-w64-mingw32/lib/
+        sudo cp -r ./openssl-source/dist/include/openssl /usr/local/ssl/include/
+        sudo cp -r ./openssl-source/dist/lib/* /usr/local/ssl/lib/
+        CGO_LDFLAGS="-g -O2 -lwsock32 -L /usr/local/ssl/lib/" GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc go build -v ./...
+
+    - name: Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: app
+        path: |
+          ./app*
+          ./openssl-source/dist
