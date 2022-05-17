@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 sudo rm -rf /usr/include/x86_64-linux-gnu/openssl /usr/local/ssl/include/openssl 
 sudo mkdir -p /usr/local/ssl/include /usr/local/ssl/lib
 sudo cp --remove-destination -r ./openssl-source/dist/include/openssl /usr/include/x86_64-linux-gnu/openssl/

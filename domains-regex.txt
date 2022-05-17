@@ -1,0 +1,5 @@
+# Separate by line
+
+# MegaDomain
+\.megadomain\.vnn\.vn$
+^megadomain\.vnn\.vn$
