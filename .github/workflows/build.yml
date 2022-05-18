@@ -33,7 +33,7 @@ jobs:
         sudo cp -r ./openssl-source/dist/lib/* /usr/x86_64-w64-mingw32/lib/
         sudo cp -r ./openssl-source/dist/include/openssl /usr/local/ssl/include/
         sudo cp -r ./openssl-source/dist/lib/* /usr/local/ssl/lib/
-        CGO_LDFLAGS="-g -O2 -lwsock32 -L /usr/local/ssl/lib/" GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc go build -v ./...
+        CGO_LDFLAGS="-g -O2 -lcrypto -lws2_32 -lgdi32 -lwsock32 -L /usr/local/ssl/lib/" GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc go build -v ./...
 
     - name: Artifacts
       uses: actions/upload-artifact@v3
